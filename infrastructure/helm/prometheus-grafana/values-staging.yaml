@@ -1,0 +1,65 @@
+# infrastructure/helm/prometheus-grafana/values-staging.yaml
+# Helm values for the kube-prometheus-stack in the staging environment.
+
+# General settings
+fullnameOverride: "prometheus"
+
+# Prometheus settings
+prometheus:
+  prometheusSpec:
+    # Set retention for 10 days
+    retention: 10d
+    # Define how often to scrape metrics
+    scrapeInterval: "30s"
+    # Persist data to a volume
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+    # Add scrape config for KServe pods
+    # KServe services with the annotation `prometheus.kserve.io/scrape: "true"`
+    # will be automatically discovered.
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+
+
+# Grafana settings
+grafana:
+  enabled: true
+  # Expose Grafana via a LoadBalancer for easy access.
+  # For production, you'd use an Ingress with authentication.
+  service:
+    type: LoadBalancer
+  # Default admin password. CHANGE THIS in a real environment.
+  adminPassword: "prom-operator"
+  # Persist dashboards and settings
+  persistence:
+    enabled: true
+    type: pvc
+    size: 5Gi
+    accessModes:
+      - ReadWriteOnce
+  # Pre-load our KServe dashboard
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+  
+  dashboards:
+    default:
+      kserve-dashboard:
+        # The content of this file comes from observability/dashboards/kserve_dashboard.json
+        file: dashboards/kserve_dashboard.json
+        # This creates a ConfigMap from the JSON file
+        # which Grafana then loads.

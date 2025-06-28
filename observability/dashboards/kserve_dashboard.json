@@ -1,0 +1,80 @@
+{
+  "__inputs": [],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "8.0.0"
+    },
+    {
+      "type": "prometheus",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "2.0.0"
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 2,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(kserve_requests_success_total{inferenceservice_name=\"music-recommender\"}[5m])) by (inferenceservice_name)",
+          "legendFormat": "{{inferenceservice_name}} - Success",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(kserve_requests_failed_total{inferenceservice_name=\"music-recommender\"}[5m])) by (inferenceservice_name)",
+          "legendFormat": "{{inferenceservice_name}} - Failed",
+          "refId": "B"
+        }
+      ],
+      "title": "Inference Request Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": { "defaults": { "unit": "ms" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 4,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(kserve_request_latency_seconds_bucket{inferenceservice_name=\"music-recommender\"}[5m])) by (le, inferenceservice_name)) * 1000",
+          "legendFormat": "p99 latency",
+          "refId": "A"
+        }
+      ],
+      "title": "p99 Request Latency",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "KServe - Music Recommender",
+  "version": 1
+}

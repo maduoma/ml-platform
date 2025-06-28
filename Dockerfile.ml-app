@@ -1,0 +1,45 @@
+# Dockerfile.ml-app
+# This Dockerfile is a placeholder for a potential standalone ML application.
+# For now, most logic is containerized in the Kubeflow components.
+
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY pyproject.toml poetry.lock ./
+RUN pip install poetry && poetry install --no-dev
+
+COPY . .
+
+# CMD ["python", "app/main.py"] # Example command
+
+# ml_platform/serving/Dockerfile.serving
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN pip install kserve==0.11.0 scikit-learn==1.2.2
+
+# Copy serving code
+COPY ml_platform/serving/ /app/
+
+# Kserve expects the model to be at a specific path
+# This is a simplified example. In a real scenario, the model would be downloaded
+# from a model registry like MLFlow or GCS/S3.
+COPY notebooks/dummy_model.joblib /mnt/models/model.joblib
+
+ENV MODEL_NAME=music-recommender
+ENV MODEL_PATH=/mnt/models/model.joblib
+
+CMD ["python", "-m", "kserve", "--model_name", "${MODEL_NAME}", "--model_path", "${MODEL_PATH}"]
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+# infrastructure/helm/kubeflow/values-production.yaml
+# Helm values for the Kubeflow installation in the production environment.
+
+# For production, we enable IAP (Identity-Aware Proxy) or another
+# robust authentication mechanism. This example assumes a Google Cloud setup.
+# For AWS, you might use an ALB Ingress Controller with Cognito.
+kubeflow-pipelines-persistence:
+  storageClassName: "gp2"
+  accessMode: "ReadWriteOnce"
+  size: "50Gi"
+
+notebook-controller:
+  enabled: true
+
+central-dashboard:
+  auth:
+    enabled: true
+    iap:
+      enabled: true
+      # Replace with your actual OAuth client ID and secret
+      oauth_client_id: "your-oauth-client-id.apps.googleusercontent.com"
+      oauth_client_secret: "your-client-secret"

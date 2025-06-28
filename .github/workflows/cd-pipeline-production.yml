@@ -1,0 +1,93 @@
+# .github/workflows/cd-pipeline-production.yml
+# This GitHub Actions workflow automates the deployment of the model
+# serving application to the PRODUCTION cluster.
+# It includes a manual approval step for safety.
+
+name: Continuous Deployment - Production Model Serving
+
+on:
+  # This workflow is triggered manually from the GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Image tag to deploy (e.g., a specific commit SHA)'
+        required: true
+        default: 'latest'
+
+env:
+  # --- CONFIGURE THESE PRODUCTION VARIABLES ---
+  AWS_REGION: "ca-central-1"
+  # Production ECR Registry URL
+  ECR_REGISTRY: "your_container_registry_url"
+  EKS_CLUSTER_NAME: "lucid-cluster-production"
+  IMAGE_NAME: "lucid-serving"
+  # The ARN of the IAM role for PRODUCTION deployments
+  AWS_IAM_ROLE_ARN: "arn:aws:iam::123456789012:role/github-actions-deploy-role-prod"
+
+jobs:
+  # This job does not run any code, it simply requires manual approval
+  # before the deployment job can start.
+  manual-approval:
+    name: "Manual Approval Gate"
+    runs-on: ubuntu-latest
+    environment:
+      name: production-deployment-gate
+      url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Awaiting manual approval to deploy to PRODUCTION
+        run: echo "Please review the deployment details and approve the workflow to proceed."
+
+  # This job will only run after the 'manual-approval' job is successful.
+  deploy-to-production:
+    name: Deploy to Production Cluster
+    runs-on: ubuntu-latest
+    needs: manual-approval # Dependency on the approval job
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref }} # Checkout the branch the workflow was run on
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: ${{ env.AWS_IAM_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Set up kubectl
+      run: |
+        aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+        echo "Kubectl context configured for PRODUCTION cluster: ${{ env.EKS_CLUSTER_NAME }}"
+
+    - name: Deploy to KServe
+      run: |
+        # In a production workflow, we deploy a specific, pre-tested image tag
+        # that was provided when the workflow was manually triggered.
+        IMAGE_TAG=${{ github.event.inputs.image_tag }}
+        echo "Deploying verified image tag: ${IMAGE_TAG}"
+
+        REGISTRY_URL_ESC=$(echo "${{ env.ECR_REGISTRY }}" | sed 's/\//\\\//g')
+        KSERVE_MANIFEST="ml_platform/serving/kserve.yaml"
+        TEMP_MANIFEST=$(mktemp)
+        cp $KSERVE_MANIFEST $TEMP_MANIFEST
+
+        # Update the manifest to use the specific image tag for the canary
+        sed -i "s/your_container_registry_url/${REGISTRY_URL_ESC}/g" $TEMP_MANIFEST
+        sed -i "s/IMAGE_TAG/${IMAGE_TAG}/g" $TEMP_MANIFEST
+
+        echo "--- Applying KServe Manifest to PRODUCTION ---"
+        cat $TEMP_MANIFEST
+        echo "----------------------------------------------"
+
+        kubectl apply -f $TEMP_MANIFEST
+
+        echo "✅ Production deployment initiated. Canary rollout has started."
+        echo "Monitor closely: kubectl get inferenceservice music-recommender --watch"

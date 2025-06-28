@@ -1,0 +1,22 @@
+# pyproject.toml
+[tool.poetry]
+name = "lucid-ml-platform"
+version = "0.1.0"
+description = "MLOps Platform for LUCID Therapeutics"
+authors = ["ML Platform Team <eng@thelucidproject.ca>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+kfp = "1.8.22" # Kubeflow Pipelines SDK
+# Add other core dependencies here
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+flake8 = "^6.0.0"
+poetry = "^1.5.1"
+# Add other development dependencies here
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

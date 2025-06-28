@@ -1,0 +1,58 @@
+# ml_platform/serving/kserve.yaml
+# KServe InferenceService definition for our music recommender.
+# This manifest demonstrates a canary deployment strategy.
+
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "music-recommender"
+  annotations:
+    # This annotation tells KServe to roll out changes progressively.
+    serving.kserve.io/deployment-mode: "Canary"
+spec:
+  predictor:
+    # The 'canary' section defines the new version we are deploying.
+    # Initially, it will get a small percentage of traffic.
+    canary:
+      # This will be automatically updated by the CD pipeline with the new image tag.
+      # The 'IMAGE_TAG' placeholder is replaced during deployment.
+      containers:
+        - image: your_container_registry_url/lucid-serving:IMAGE_TAG
+          name: kserve-container
+          env:
+            - name: MODEL_NAME
+              value: music-recommender-canary
+            - name: MODEL_PATH
+              value: /mnt/models/dummy_model.joblib
+          resources:
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+    
+    # The 'default' section defines the stable, production version.
+    # It will continue to serve the majority of the traffic until the
+    # canary is promoted.
+    default:
+      containers:
+        - image: your_container_registry_url/lucid-serving:stable # A known stable image tag
+          name: kserve-container
+          env:
+            - name: MODEL_NAME
+              value: music-recommender-default
+            - name: MODEL_PATH
+              value: /mnt/models/dummy_model.joblib
+          resources:
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+
+    # Defines how traffic is split between default and canary.
+    # After the CD pipeline deploys, 10% of traffic will go to the new canary version.
+    # To promote the canary fully, you would update this to 0%.
+    canaryTrafficPercent: 10

@@ -1,0 +1,69 @@
+# infrastructure/helm/kubeflow/values-staging.yaml
+# Helm values for deploying Kubeflow in the staging environment.
+# This is a representative sample of key configurations. A full Kubeflow
+# values file is very extensive.
+
+# Global settings that might apply to multiple components
+global:
+  namespace: kubeflow # The namespace where Kubeflow will be installed
+
+# Configuration for Kubeflow Pipelines
+pipelines:
+  enabled: true
+  persistence:
+    # Use a default storage class for PersistentVolumeClaims
+    storageClassName: "gp2"
+    # Size of the volume for pipeline artifacts
+    size: "20Gi"
+  # Set resource requests and limits for the pipeline engine
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+
+# Configuration for Kubeflow Notebooks
+notebooks:
+  enabled: true
+  jupyter:
+    # Default resource allocations for new notebooks created by users
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "2"
+        memory: "4Gi"
+  # Define custom notebook images that users can select
+  culling:
+    # Automatically shut down idle notebooks to save resources
+    enabled: true
+    idleTime: "3600" # 1 hour in seconds
+
+# Central Dashboard configuration
+centralDashboard:
+  enabled: true
+  # For staging, we can disable complex authentication for simplicity.
+  # Production should use IAP, OIDC, or another secure method.
+  auth:
+    enabled: false
+
+# Katib for hyperparameter tuning
+katib:
+  enabled: true
+  controller:
+    resources:
+      requests:
+        cpu: "200m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+# MLflow Integration (if managed within the same Helm chart)
+# This is often deployed separately but can be configured here.
+mlflow:
+  enabled: false # Assuming we provision this separately with Terraform
+

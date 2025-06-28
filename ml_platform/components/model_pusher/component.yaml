@@ -1,0 +1,9 @@
+# ml_platform/components/model_pusher/component.yaml
+name: Push Model to Registry
+description: Pushes the validated model to the MLflow model registry.
+inputs:
+  - {name: model, type: Model}
+implementation:
+  container:
+    image: your_container_registry_url/lucid-model-pusher:latest
+    command: [python, push_model.py, --model_path, {inputPath: model}]

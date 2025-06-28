@@ -1,0 +1,24 @@
+# infrastructure/helm/kserve/values-production.yaml
+# Helm values for KServe in the production environment.
+
+kserve:
+  controller:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: "1Gi"
+
+inferenceService:
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+  autoscaler:
+    class: "kpa.autoscaling.knative.dev"
+    containerConcurrency: 100

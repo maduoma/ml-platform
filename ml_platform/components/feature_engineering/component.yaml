@@ -1,0 +1,11 @@
+# ml_platform/components/feature_engineering/component.yaml
+name: Engineer Features
+description: Creates new features from the raw data.
+inputs:
+  - {name: raw_data, type: Dataset}
+outputs:
+  - {name: engineered_features, type: Dataset}
+implementation:
+  container:
+    image: your_container_registry_url/lucid-feature-engineering:latest
+    command: [python, engineer_features.py, --data_path, {inputPath: raw_data}, --output_path, {outputPath: engineered_features}]

@@ -1,0 +1,28 @@
+# ml_platform/components/drift_detection/component.yaml
+# Kubeflow component specification for the drift detection step.
+
+name: Detect Data Drift
+description: Generates a data drift report using Evidently AI.
+
+inputs:
+  - name: reference_data
+    type: Dataset
+    description: 'Reference dataset (e.g., training data)'
+  - name: current_data
+    type: Dataset
+    description: 'Current dataset (e.g., recent production data)'
+
+outputs:
+  - name: report
+    type: UI-Metadata
+    description: 'HTML report showing data drift analysis'
+
+implementation:
+  container:
+    image: your_container_registry_url/lucid-drift-detection:latest # Replace with your registry
+    command: [
+      python, detect_drift.py,
+      --reference_data, {inputPath: reference_data},
+      --current_data, {inputPath: current_data},
+      --report_path, {outputPath: report}
+    ]

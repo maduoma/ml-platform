@@ -1,0 +1,46 @@
+# infrastructure/helm/kserve/values-staging.yaml
+# Example Helm values for a KServe installation in the staging environment.
+# These settings control resource allocation and default behaviors.
+
+# Controller configurations
+kserve:
+  controller:
+    # Set resource requests and limits for the KServe controller manager
+    # to ensure it has enough resources to manage InferenceServices.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+# Default configuration for all InferenceServices created
+# These can be overridden in the InferenceService definition itself.
+inferenceService:
+  # Default serving container resource allocation
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  
+  # Default autoscaling settings
+  autoscaler:
+    # Use Kubernetes Pod Autoscaler (KPA) by default
+    class: "kpa.autoscaling.knative.dev"
+    # Target 100 concurrent requests per pod before scaling up
+    containerConcurrency: 100
+
+# Agent configuration for logging and batch processing (if needed)
+agent:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi

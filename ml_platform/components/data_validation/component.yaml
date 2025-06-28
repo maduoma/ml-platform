@@ -1,0 +1,11 @@
+# ml_platform/components/data_validation/component.yaml
+name: Validate Data
+description: Validates the quality of the raw data.
+inputs:
+  - {name: raw_data, type: Dataset}
+outputs:
+  - {name: validation_report, type: UI-Metadata}
+implementation:
+  container:
+    image: your_container_registry_url/lucid-data-validation:latest
+    command: [python, validate.py, --data_path, {inputPath: raw_data}, --report_path, {outputPath: validation_report}]

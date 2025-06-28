@@ -1,0 +1,12 @@
+# ml_platform/components/model_evaluation/component.yaml
+name: Evaluate Model
+description: Evaluates the trained model on a validation set.
+inputs:
+  - {name: model, type: Model}
+  - {name: validation_data, type: Dataset}
+outputs:
+  - {name: evaluation_metrics, type: Metrics}
+implementation:
+  container:
+    image: your_container_registry_url/lucid-model-evaluation:latest
+    command: [python, evaluate.py, --data_path, {inputPath: validation_data}, --model_path, {inputPath: model}]

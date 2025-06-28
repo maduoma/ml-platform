@@ -1,0 +1,10 @@
+
+# ml_platform/components/data_ingestion/component.yaml
+name: Ingest Data
+description: Ingests raw data for the pipeline.
+outputs:
+  - {name: raw_data, type: Dataset}
+implementation:
+  container:
+    image: your_container_registry_url/lucid-data-ingestion:latest
+    command: [python, ingest.py, --output_path, {outputPath: raw_data}]

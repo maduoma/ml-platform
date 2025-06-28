@@ -1,0 +1,11 @@
+# ml_platform/components/model_training/component.yaml
+name: Train Model
+description: Trains a classification model.
+inputs:
+  - {name: features, type: Dataset}
+outputs:
+  - {name: model, type: Model}
+implementation:
+  container:
+    image: your_container_registry_url/lucid-model-training:latest
+    command: [python, train.py, --data_path, {inputPath: features}, --model_path, {outputPath: model}]
