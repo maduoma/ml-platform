@@ -1,5 +1,6 @@
 # README.md
-# Lucid ML Platform
+
+## Lucid ML Platform
 
 This repository contains the code for the Machine Learning Platform at LUCID Therapeutics. It provides the infrastructure, pipelines, and tools to streamline the entire machine learning model lifecycle.
 
@@ -14,20 +15,22 @@ This repository contains the code for the Machine Learning Platform at LUCID The
 
 ## Getting Started
 
-1.  **Prerequisites**:
-    * Python 3.9+
-    * Terraform
-    * Docker
-    * kubectl
-    * Helm
+1. **Prerequisites**:
+    - Python 3.9+
+    - Terraform
+    - Docker
+    - kubectl
+    - Helm
 
-2.  **Setup Development Environment**:
+2. **Setup Development Environment**:
     Run the setup script to create a virtual environment and install dependencies.
+
     ```bash
     make setup
     ```
 
-3.  **Activate Virtual Environment**:
+3. **Activate Virtual Environment**:
+
     ```bash
     poetry shell
     ```
@@ -36,17 +39,19 @@ This repository contains the code for the Machine Learning Platform at LUCID The
 
 The infrastructure is managed with Terraform.
 
-1.  Navigate to the environment directory:
+1. Navigate to the environment directory:
+
     ```bash
     cd infrastructure/terraform/environments/staging
     ```
 
-2.  Initialize Terraform:
+2. Initialize Terraform:
+
     ```bash
     terraform init
     ```
 
-3.  Apply the configuration:
+3. Apply the configuration:
+
     ```bash
     terraform apply
-    
