@@ -1,10 +1,13 @@
 # Project: Building a Robust MLOps Platform for Personalized Music Therapy
+
 This project is designed to address the core needs outlined in the job description, focusing on building a production-ready ML platform from the ground up to support LUCID's unique application of AI in consumer health and wellness.
 
-# Project Summary
+## Project Summary
+
 The goal of this project is to build a scalable and reliable Machine Learning Operations (MLOps) platform that will serve as the backbone for developing, deploying, and maintaining LUCID's AI-driven music therapy models. This platform will empower the Machine Learning team to rapidly iterate on models that personalize music to improve mental well-being, while ensuring the highest standards of robustness, scalability, and regulatory compliance.
 
-# Alignment with LUCID's Mission
+## Alignment with LUCID's Mission
+
 This project directly contributes to LUCID's mission of pioneering mobile health experiences by:
 
 - Accelerating Innovation: By automating and streamlining the ML lifecycle, the platform will enable the ML team to focus on advancing the core "Emotion AI" and "BioMIR" technologies.
@@ -13,12 +16,13 @@ This project directly contributes to LUCID's mission of pioneering mobile health
 
 - Building for Scale: As LUCID's user base grows, the platform will be able to handle the increased demand for personalized music recommendations and therapies.
 
-# End-to-End Project Plan
+## End-to-End Project Plan
+
 This project is broken down into phases, with clear deliverables at each stage.
 
 ## Phase 1: Foundation and Core Infrastructure (First 60 Days)
 
-### Objective: Stand up the foundational components of the ML platform.
+### Objective: Stand up the foundational components of the ML platform
 
 - Key Activities:
 
@@ -114,13 +118,15 @@ Documentation: Write detailed documentation for the project, including architect
 
 Training: Provide training materials for the ML team, including hands-on tutorials and training sessions.
 
-Handover: 
+Handover:
 Hand over the project to the ML team for further development and maintenance.
 
 Folder Structure
 Here is a proposed folder structure for the project's codebase:
 
-```
+<!-- markdownlint-disable-next-line MD046 -->
+```...folder tree...
+
 lucid-ml-platform/
 ├── .github/
 │   └── workflows/
@@ -231,7 +237,7 @@ lucid-ml-platform/
 └── README.md
 ```
 
-## Explanation of Key Directories:
+## Explanation of Key Directories
 
 - .github/workflows: Contains the CI/CD pipeline definitions for GitHub Actions.
 

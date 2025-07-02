@@ -3,8 +3,7 @@
 
 import argparse
 import pandas as pd
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset
+from evidently import Report, DataDriftPreset
 
 def detect_data_drift(reference_data_path: str, current_data_path: str, report_path: str):
     """

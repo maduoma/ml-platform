@@ -31,7 +31,7 @@ jobs:
     name: "Manual Approval Gate"
     runs-on: ubuntu-latest
     environment:
-      name: production-deployment-gate
+      name: production
       url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Awaiting manual approval to deploy to PRODUCTION

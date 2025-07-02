@@ -1,8 +1,7 @@
 # ml_platform/components/data_validation/validate.py
 import pandas as pd
 import argparse
-from evidently.report import Report
-from evidently.metric_preset import DataQualityPreset
+from evidently import Report, DataQualityPreset
 
 def validate_data(data_path: str, report_path: str):
     print(f"Validating data from {data_path}")
